@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScoolBase</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+    
+    <div id="myInputs">
+        <div id="welcomeDiv">
+           Введи свой класс
+        </div>
+    </div>
+
+    <div id="GetClassDiv">
+        <input name="GetClass" type="text" id="GetClass"> <br>
+        <input type="button" id="searchBut" value="Search">
+
+    </div>
+
+    <script>
+        var container = document.getElementById("ClassInfoContainer");
+
+    function loadClass(data) {
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        console.log("--------");
+        console.log(data);
+
+        if(data!=="NOTFOUND")
+        {
+            var ClassNameDiv = document.createElement("div");
+            var ClassName = document.createTextNode("Класс: "+data.name);
+            ClassNameDiv.appendChild(ClassName);
+            container.appendChild(ClassNameDiv);
+
+            var StudentsAmountDiv = document.createElement("div");
+            var StudentsAmount = document.createTextNode("Школото: "+data.amount);
+            StudentsAmountDiv.appendChild(StudentsAmount);
+            container.appendChild(StudentsAmountDiv);
+
+            var TeacherDiv = document.createElement("div");
+            var Teacher = document.createTextNode("Учитель : "+data.teacher);
+            TeacherDiv.appendChild(Teacher);
+            container.appendChild(TeacherDiv);
+        } else {
+            var NotFoundDiv = document.createElement("div");
+            var Text = document.createTextNode("Нет такого класса, уточни какой тебе нужен");
+            NotFoundDiv.appendChild(Text);
+            container.appendChild(NotFoundDiv);
+        }
+    }
+
+    function click() {
+        if (input.value !== "") {
+            $.post("http://localhost:9090/Servlet/todo",
+                JSON.stringify({
+                    name: input.value
+                }), function (data, status) {
+                    loadClass(data);
+                })
+        } else {
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            var NotInputDiv = document.createElement("div");
+            NotInputDiv.className = "NotInputDiv";
+            var Text = document.createTextNode("Почему ты ничего не ввель?");
+            NotInputDiv.appendChild(Text);
+            container.appendChild(NotInputDiv);
+        }
+        input.value = "";
+    }
+
+    var button = document.getElementById("searchBut");
+    var input = document.getElementById("GetClass");
+
+    button.addEventListener("click", click, false);
+
+</script>
+
+</body>
+</html>
